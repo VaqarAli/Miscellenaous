@@ -1,0 +1,1146 @@
+For right skewed distribution, we take square / cube root or logarithm of variable and for left skewed, we take square / cube or exponential of variables.
+
+-Logarithm: Log of a variable is a common transformation method used to change the shape of distribution of the variable on a distribution plot. It is generally used for reducing right skewness of variables. Though, It can’t be applied to zero or negative values as well.
+-Square / Cube root: The square and cube root of a variable has a sound effect on variable distribution. However, it is not as significant as logarithmic transformation. Cube root has its own advantage. It can be applied to negative values including zero. Square root can be applied to positive values including zero.
+-Binning: It is used to categorize variables. It is performed on original values, percentile or frequency. Decision of categorization technique is based on business understanding. For example, we can categorize income in three categories, namely: High, Average and Low. We can also perform co-variate binning which depends on the value of more than one variables.
+
+FUNCION TO REMOVE HIGH VIF VARIABLE
+def calculate_vif(x):
+    thresh = 5.0
+    output = pd.DataFrame()
+    k = x.shape[1]
+    vif = [variance_inflation_factor(x.values, j) for j in range(x.shape[1])]
+    for i in range(1,k):
+        print("Iteration no.")
+        print(i)
+        print(vif)
+        a = np.argmax(vif)
+        print("Max VIF is for variable no.:")
+        print(a)
+        if vif[a] <= thresh :
+            break
+        if i == 1 :          
+            output = x.drop(x.columns[a], axis = 1)
+            vif = [variance_inflation_factor(output.values, j) for j in range(output.shape[1])]
+        elif i > 1 :
+            output = output.drop(output.columns[a],axis = 1)
+            vif = [variance_inflation_factor(output.values, j) for j in range(output.shape[1])]
+    return(output)
+train_out = calculate_vif(x_train) 
+
+Important things in Python-
+
+#Check Rows and Columns-
+dataframename.shape
+
+#Add Null Values in a new column-
+dataframename['new col'] = np.nan #np is Numpy
+
+#Drop duplicate rows-
+cars = cars.drop_duplicates(keep='first')
+
+#Remove Spaces from column names-
+cars.columns = cars.columns.str.replace(' ','')
+
+#Arrange cols of test in same fashon as of train
+cs_test=ld_test[ld_train.columns]
+
+#Club 2 different dataframes
+cs_all=pd.concat([cs_train,cs_test],axis=0)
+
+#Count NAs columnwise in a dataframe
+cs_all.isnull().sum()
+#Check NAs in whole dataset
+np.where(np.isnan(cs_all))
+
+#Check datatypes of columns from dataframe
+cs_all.dtypes
+
+#Count unique values in a column
+cs_all['Column_Name'].value_counts()
+
+#Drop a column
+cs_all.drop(['Medicine_ID'],axis=1,inplace=True)
+#Alternate is => del cs_all['Medicine_ID']
+
+#Columns with datatype Object
+cs_all.select_dtypes(['object']).columns
+#Incase if last col to be excluded
+cs_all.select_dtypes(['object']).columns[:,-1]
+
+#Check for Null Values in columns
+cs_all.isnull().sum()
+
+#Replace NAs with mean from train
+for col in cs_all.columns:
+    if (col not in ['Counterfeit_Sales','data'])& (cs_all[col].isnull().sum()>0):
+        cs_all.loc[cs_all[col].isnull(),col]=cs_all.loc[cs_all['data']=='train',col].mean()
+
+#Separate Train and Test
+cs_train=cs_all[cs_all['data']=='train']
+del cs_train['data']
+cs_test=cs_all[cs_all['data']=='test']
+cs_test.drop(['Counterfeit_Sales','data'],axis=1,inplace=True) #Drop Response col from test.
+
+#Separate Train Test on 80-20 basis
+from sklearn.model_selection import train_test_split
+cs_train1,cs_train2=train_test_split(cs_train,test_size=0.2,random_state=2)
+#Here 'Counterfeit_Sales' is response variable
+x_train1=cs_train1.drop('Counterfeit_Sales',axis=1)
+y_train1=cs_train1['Counterfeit_Sales']
+
+#Identify how many Unique values in each column
+for col in cd_train.select_dtypes(['object']).columns:
+    print(col,':',cd_train[col].nunique())
+
+##Reset Index of a dataframe
+cd_train.reset_index(drop=True,inplace=True)
+
+## Impute NULL or NA values with function on individually
+def impute_median(series):
+    return series.fillna(series.median())
+			OR
+framingham.glucose=framingham['glucose'].transform(impute_median)
+
+## Get the whole row with NA value
+nan_rows = store_all[store_all['country'].isnull()]
+
+
+df['LoanAmount'].fillna(df['LoanAmount'].mean(), inplace=True)
+
+## Function to return min and max values-
+def min_max_values(col):
+  top = cars[col].idxmax()
+  top_obs = pd.DataFrame(cars.loc[top])
+
+  bottom = cars[col].idxmin()
+  bot_obs = pd.DataFrame(cars.loc[bottom])
+
+  min_max_obs = pd.concat([top_obs,bot_obs],axis=1)
+
+  return min_max_obs #Returns the index of row
+
+
+## Another example
+bank["loan"] = bank["loan"].map({"no":0,"yes":1})
+
+## Count duplicate values within column
+from collections import Counter
+c = Counter(list(zip(df.col))
+
+## Outliers identification
+Q1 = df.quantile(0.25)
+Q3 = df.quantile(0.75)
+IQR = Q3 - Q1
+Outliers_df = (df< (Q1 - 1.5 * IQR)) |(df> (Q3 + 1.5 * IQR))
+
+##Write df to csv
+pd.DataFrame(test_pred).to_csv("mysubmission.csv",index=False)
+
+################
+
+SHORTCUTS IN PYTHON
+-----------------------------------
+Execute - Shift + Enter
+Add Cell Above -> Escape + A
+Add Cell Below -> Escape + B
+Delete Cell -> Escape + d + d
+Comment -> Ctrl + /
+Split Cell - Ctrl + Shift + - (Doesn't work with IE)
+Merge Cell - Shift + M
+-----------------------------------
+
+STRING FUNCTIONS
+-----------------------------------
+-Length of variable -> len(variablename)
+-Convert to Lower Case -> variable.lower()
+-Convert to Upper Case -> variable.upper()
+-Only first char Capital -> variable.capitalize()
+-Add Spaces to left (along with string length) -> variable.rjust(length including string length of variable)
+Similarly variable.ljust and variable.center
+-Remove White Spaces from left, right and both sides respectively -> variable.lstrip(), variable.rstrip(), variable.strip()
+-Replace string -> variable.replace('ReplaceWhat','ReplaceWith')
+-Split. Output will be a list of string without delimiter specified -> variable.split('Delimiter')
+
+LIST
+----------------
+append and extend are inplace changing
+-Add element at the end of the list -> variable.append('string')
+-Add another list at the end of a list -> variable.extend(list)
+alternate to extend example => x = x+[3,4,5]
+-Insert a new element in list at a specific location -> variable.insert(position,element)
+-Remove element by position -> variable.pop(position) - If no argument passed the last element is removed.
+-Remove element by value -> variable.remove(element) - First element will be removed
+-Sort elements from list -> variable.sort() - Ascending order
+variable.sort(reverse = True) - Descending order
+-Reverse the elements in list -> variable.reverse()
+## All above functions performs Inplace changes
+x = ['a',1,'Hello',99,20,30,'Abc',4]
+x[2:4] = ['Acer'] o/p -> ['a',1,'Acer',20,30,'Abc',4]
+x[2:4] = 'Acer' o/p -> ['a',1,'A','c','e','r',30,'Abc',4]
+
+-Loop in a list - Square all elements from list x
+squares = [num**2 for num in x]
+-Loop with condition in list - Square only Even elements from list x
+even_squares = [num**2 for num in x if num%2 == 0]
+-Another Example
+x = [[1,2],['a','b'],[34,67]]
+
+x = [2,3,4,5,6,8,9,-10,0,33,44,12]
+even_sq = [num**2 for num in x if num%2 == 0]
+O/p = [4,16,36,64,100,0,1936,144]
+
+for i,j in x: # number of elements in list should be equal to number of counting parameters
+  print(i,j)
+-Example2
+for i,city in enumerate(cities): # i works as counter
+   print(i,':',len(city))
+enumerate function enumerate the elements and link a counter to them strating with 0.
+
+DATA STRUCTURES
+------------------
+1. Dictionaries
+2. Set
+3. Tuples
+
+-Define Dictionary
+d = {"Odds":[3,5,7,9],"Evens":[2,4,6,8],"Vowels":['a','e','i','o','u'],"Prime":[3,5,7,11]}
+-Access Keys in dictionary
+d.keys()
+-Access ALL Values in dictionary
+d.values()
+-Access a particular Key's Value
+d['Vowels']
+-Access a particular value from the Key
+d['Vowels'][2]
+-Add additional key to existing dictionary
+d['Countries']=["Singapore","Saudi Arabia","India","Canada"]
+-Delete a particular Key Value pair
+del d['Countries']
+-Access Keys using loop
+  for elem in d:
+    print(elem)
+-Access Values using loop
+  for elem in d:
+    print(d[elem])
+-Tuples i.e. Key-Value pair as a list
+d.items()
+-Key separate, Value Separate in for loop
+for a, b in d.items():
+#a has keys and b has values
+
+-Define Sets
+animals = {"cat","dog"}
+-in, not in operators returns True/Flase
+"cat" in animals
+o/p - True
+"fish" in animals
+o/p - False
+-Add element in set
+variable.add('String')
+-Remove element from set
+variable.remove('ExistingString')
+-Union
+a.union(b)
+-Intersection
+a.intersection(b) # Gives the intersection from both sets
+-Check if a is subset of b. Returns True or False
+a.issubset(b)
+-Check if a is superset of b.
+a.issuperset(b)
+-Difference
+a={1,2,3}
+b={3,4,5}
+a.difference(b)
+o/p - {1,2}
+-Symmetric Difference
+a.symmetric_difference(b)
+o/p - {1,2,4,5}
+
+TUPLES are same as list but their elements cannot be changed
+t = (1,2,3)
+t[2] = 99 # This is not allowed. System throws error. This property is known as imutability.
+
+FUNCTIONS
+-def Function_Name(ListOfArguments)
+Functions can return multiple values.
+While calling functions we can give the argument name(As given local name while defining function. This eliminates the condition of arguments to be passed in sequence)
+-Undefined number of arguments
+def test_var_args(farg, *args):
+  print("formal arg:",farg)
+  for arg in args:
+    print("another arg:",arg)
+
+test_var_args(1,"Two",3,4,5)
+-Name of undefined arguments
+def test_var_kwargs(farg, **kwargs):
+  print("formal arg:",farg)
+  for key in kwargs:
+    print("another keyword arg: %s: %s"%(key,kwargs[key]))
+
+test_var_kwargs(farg=1,myarg2 = 2, myarg3 = 3)
+formal arg: 1
+another keyword arg: myarg2: 2
+another keyword arg: myarg3: 3
+
+FLOW CONTROL
+If Else
+- if x>10:
+    ----
+  elif x>7:
+    ----
+  else
+    ----
+
+CLASS
+--------------------------
+class Point (object):
+  def __init__(self,x,y):
+    self.X = x
+    self.Y = y
+
+a = Point(2,3)
+b = Point(5,7)
+
+a.X, a.Y   ->  o/p  ->  (2,3)
+b.X, b.Y   ->  o/p  ->  (5,7)
+
+Class with 2 functions-
+class Point(object):
+  def __init__(self,x,y):
+    self.X = x
+    self.Y = y
+  def dist_two_points(self,other):
+    temp = (self.X-other.X)**2 + (self.Y-other.Y)**2
+    return(math.sqrt(temp))
+  def dist_from_origin(self)
+    temp = (self.X)**2 + (self.Y)**2
+    return(math.sqrt(temp))
+
+a = Point(2,3)
+b = Point(5,7)
+
+a.X,a.Y   O/P  ->  (2,3)
+b.X,b.Y   O/P  ->  (5,7)
+
+Point.dist_two_points(a,b)
+Point.dist_from_origi(a)
+a.dist_from_origin()
+a.dist_two_points(b)
+##########################################
+
+a. Creating nd arrays
+b. subsetting with indices and conditions
+c. Comparison with np and math functions[np.sqrt, log etc], special numpy function
+
+a.
+import numpy as np
+b = np.array([[3,20,99],[-13,4.5,26],[0,-1,20],[5,78,-19]])
+b.shape
+b[2,1] O/P => -1
+b[:,1] O/P => array([20,4.5,-1,78])
+b[1,:] or b[1] O/P => array([-13,4.5,26])
+
+b[b>0] O/P => all the elements greater than 0
+b[:,b[2]>=0] O/P ==> 1st and 3rd columns' elements will be the output
+b[1] = np.abs(b[1]) ==> neg elements from second row will be absoluted
+np.sum(b,axis=0) O/P ==> sum column wise
+np.sum(b,axis=1) O/P ==> sum row wise
+
+np.arrange(6) O/P => numbers from 0 to 5
+np.arrange(2,8) O/P => numbers from 2 to 7
+np.linspace(start=2,stop=10,num=15) ==> 15 numbers from 2 to 10
+
+np.random.randint(high=10,low=1,size=(2,3)) # 2*3 array with random number between 1 to 10
+np.random.random(size=(3,4)) #Same as above but numbers between 0-1. Array of 3*4
+np.random.choice(x,6,replace=False) # (Non repeating) 6 random elements from array x. Used especially for categorical variable.
+y = np.random.choice(['a','b'],600,p=[0.8,0.2]) #a with approx 80% and rest is b
+np.unique(y,return_counts=True) #returns unique values and their count
+
+x=np.random.randint(high=100,low=12,size=(15,)) #Array of 15 intergers between 12 to 100.
+x.sort() # Inplace sorting
+
+If X is a 2d array
+X=np.random.randint(high=100,low=12,size=(4,6))
+X[X[:,2].argsort(),:] # Based on elements of 3rd col whole rows will be rearranged.
+
+x.max() #Maximum value
+x.argmax() #Index of maximum value
+-----------
+Package
+import numpy as np
+np.random.randint(high=7,low=1)
+it will randomly generate a number between 1 and 6
+
+Find log of a list if one statement
+---------
+logs = [math.log(num) for num in x]
+but if I have 0 or -ve numbers then log cannot be calculated.
+For that use condition within same satement
+logs = [math.log(num) for num in x if num>0 else 'out of domain']
+
+Cumulative sum
+------------------
+var1 = np.cumsum(np.round(pca.explained_variabce_ration_,decimals=4)*100)
+First arg is the list of numbers and second is the decimal
+
+
+### PANDAS DATAFRAME ###
+1. Manually creating data frames
+2. Reading data from external file
+3. Peripheral summary of the data
+4. Subsetting on the basis of rownumber, colnumber
+5. Subsetting on the basis of condition
+6. Subsetting on the basis of column names
+
+import pandas as pd
+1. Creating Data frames
+df = pd.DataFrame(data = any_tabular_data, columns = ['col1', 'col2','col3'])
+Another Way is using dictionary-
+df = pd.DataFrame({'age':my_age_list, 'city':my_city_list, 'default':my_default_list})
+
+2. Reading data from external file
+file = r'file path\filename.csv'
+ld = pd.read_csv(file)
+
+3. Peripheral summary of the data
+ld.head()
+ld.columns
+ld.rownames
+ld.dtypes
+ld.shape
+
+4. Subsetting on the basis of rownumber, colnumber
+ld1 = ld.iloc[3:7,1:5] #iloc used to subset data based on positions
+
+5. Subsetting on the basis of condition
+ld[(ld['Home.Ownership']=='Mortgage') & (ld['Monthly.Income']>5000)]
+#Another example for positions
+ld.loc[(ld['Home.Ownership']=='Mortgage') & (ld['Monthly.Income']>5000),['Home.Ownership','Monthly.Income']]
+#Opposite of above condition
+ld.loc[~(ld['Home.Ownership']=='Mortgage') & (ld['Monthly.Income']>5000),['Home.Ownership','Monthly.Income']]
+
+6. Subsetting on the basis of column names
+ld['Home.Ownership'] #Single column
+ld[['Home.Ownership','Monthly.Income']] #Pass list as an arg to access multiple cols
+
+Drop Cols based on colnames
+ld = ld.drop(['Home.Ownership','Monthly.Income'],axis=1)
+# Note - drop function doesn't change inplace
+Otherwise we can use inplace argument
+ld.drop(['Debt.To.Income.Ration', 'State'],axis = 1,inplace=True)
+Another way to delete a col
+del ld['Employment.Length']
+
+#Modifying Data with Pandas
+1. Changing variable types
+2. Adding/Modifying variables with algebraic operations
+3. Adding/Modifying variables based on condition
+4. Handling missing values
+5. Creating flag variables
+6. Creating multiple columns from a variable with separating at a delimiter
+
+
+1. Changing variable types
+mydata['age'] = pd.to_numeric(mydata['age'],errors = 'coerce')
+
+2. Adding/Modifying variables with algebraic operations
+mydata['balance_log'] = np.log(mydata['balance'])
+
+mydata['age'].isnull()
+mydata['age'].isnull().sum()
+
+3. Adding/Modifying variables based on condition
+mydata['rating_score'] = np.where(mydata['rating'].isin(['Good','Excellent']),1,0)
+
+4. Handling missing values
+mydata.loc[mydata['age'].isnull(),'age'] = mydata['age'].mean()
+
+5. Creating flag variables
+mydata['city_mumbai'] = np.where(mydata['city'] == 'Mumbai', 1,0)
+mydata.loc[mydata['rating'] == 'Pathetic','rating_score']=-1
+(mydata['city']=='Chennai').astype(int)
+
+6. Creating multiple columns from a variable with separating at a delimiter
+mydata['fico'].str.split('-',expand=True) #Create 2 different cols sepearted from -
+#To convert it to float
+mydata['fico'].str.split('-',expand=True).astype(float)
+
+Creating dummies
+dummy = pd.get_dummies(mydata['rating'],drop_first=True,prefix='rating')
+mydata = pd.concat([mydata,dummy],axis=1)
+
+1. Sorting data by 1 or more cols in asc or desc manner
+2. Combining dataframes vertically or horizontally
+3. Merging them using keys, left, right, inner and outer joins
+
+1. Sorting data by 1 or more cols in asc or desc manner
+df.sort_values('A',inplace=True,ascending=False)
+df = df.sort_values('A',ascending=False)
+
+df.sort_values(['B','C'],inplace=True,ascending=[True,False])
+
+2. Combining dataframes vertically or horizontally/ rbind
+#Axis = 0 means Vertically and 1 means horizontally
+pd.concat([df1,df2],axis=0) #Index also appended and dont have unique sequence in final outcome
+
+pd.concat([df1,df2],axis=0,ignore_index = True)
+
+3. Merging them using keys, left, right, inner and outer joins
+pd.merge(df1,df2,on = ['custid'],how='inner')
+
+# Numerical Summary
+bd = pd.read_csv(file,delimiter=';')
+bd.describe() #count, mean, std, min, 25%, 50%, 75%, max
+This can be used on numerical as well as categorical cols. ex-
+bd['age'].describe()
+bd['job'].describe()
+
+bd.unique() # Number of unique values each column has.
+
+#Frequency count in descending order
+bd['job'].value_counts()
+We can save it
+k = bd['job'].value_counts()
+k.values
+k.index
+k.index[-1] #least frequent
+k.index[0] #most frequent
+k.index[k.values>1500] #frequencies >1500
+Alternate to it is
+k.index[k>1500]
+
+pd.crosstab(bd['default'],bd['housing'])
+
+List of categorical columns
+bd.select_dtypes(['object']).columns
+
+Group By
+bd.groupby(['default'])['age'].mean() #Single column
+bd.groupby(['default','loan']).meadian() #Median for all the columns grouped by default first and then loan.
+
+#### VISUALIZATION ###
+import seaborn as sns
+%matplotlib inline
+
+1. Numeric Variable : Density Plots, box plots
+2. Numeric - Numeric Variable : Scatter Plot, pairwise density plots
+3. Faceting of the data
+4. Categorical Data
+5. Faceting in Categorical Data
+6. Heatmpas
+
+1. Numeric Variable : Density Plots, box plots
+sns.displot(bd['age']) #This gives density curve as well as histograms for age.
+sns.displot(bd['age'],kde=Flase) #Only Histograms
+sns.displot(bd['age'],kde=Flase,bins = 15) #number of bins/bars
+sns.displot(bd['age'],kde=Flase,bins=30,norm_hist=True)#Normalizes histogram and gives frequency percentages
+myplot = sns.displot(bd['age'],kde=Flase,bins=30,norm_hist=True)
+myimg = myplot.get_figure()
+myimg.savefig('Output.png')
+
+sns.kdeplot(bd['age']) #Only density plot without histograms
+
+sns.boxplot(bd['age'])
+sns.boxplot(y='age',data=bd) #Vertical
+sns.boxplot(x='age',data=bd) #Horizontal
+sns.boxplot(x='age',y='education',data=bd) #Combined X and Y
+
+2. Numeric - Numeric Variable : Scatter Plot, pairwise density plots
+sns.jointplot(x='age',y='balance',data=bd)
+sns.jointplot(x='age',y='balance',data=bd.loc[(bd['balance']>0) & (bd['balance']<1000),:],kind='hex') #We can also use kind as 'kde'
+
+3. Faceting of the data
+sns.lmplot(x='duration',y='campaign',data=bd.iloc[1:500,:], hue='housing',col='default',row='loan')
+
+4. Categorical Data
+sns.countplot(x='eductation',hue = 'loan',data=bd)
+
+5. Heatmpas
+bd.corr()
+sns.heatmap(bd.corr())
+
+######################################################
+#Piece of code from Gradient Descent
+Addition and formulation of a dataframe
+x1 = np.random.randint(low = 1, high = 20, size = (50,))
+x2 = np.random.randint(low = 1, high = 20, size = (50,))
+y = 3 + 2*x1 - 4*x2 + np.random.random((50,))
+
+x = pd.DataFrame({'intercept':np.ones_like(x1),'x1':x1,'x2':x2})
+
+w = np.zeros(x.shape[1])
+#####################################
+find the coefficient of any model fitted on train data
+modelobject.coef_ #these are betas
+find the intercept of model fitted on train data
+modelobject.intercept_
+
+########
+FIND NAs IN A DATAFRAME
+how to find the row and cols of NAs in data frame
+which(is.na(temp), arr.ind=TRUE) #temp is the dataframe. It gives the output in Matrix form.
+***********************
+GROUP DATA FROM 1 COLUMN w.r.t. ANOTHER COLUMN WITH 2 VALUES
+
+table(rg$occupation,rg$Revenue.Grid) #Revision.Grid has 2 values i.e. 1 and 2
+It groups the Occupation data with respect to Revenue.Grid data from the data frame.
+
+If this has to be represented in the form of probability then-
+round(prop.table(table(rg$occupation,rg$Revenue.Grid),1),2)
+1st argument for table() is row wise data and 2nd argument is column wise data.
+2nd argument in prop.table make the probability row-wise.
+***********************
+GROUP DATA FROM 1 COLUMN w.r.t. ANOTHER COLUMN WITH CONTINUOUS VALUES
+
+round(tapply(ld_all$Interest.Rate,ld_all$Loan.Purpose,mean,na.rm=T))
+Excluding NAs it takes the mean of all the Interest Rate for specific category labeled under Loan.Purpose column.
+***********************
+TO CHECK HOW MANY COLUMNS CONTAINS CHARACTER VALUES
+
+names(rg)[sapply(rg,function(x) is.character(x))]
+rg is the data set
+***********************
+TO CHECK HOW MANY UNIQUE VALUES DOES A COLUMN TAKES
+
+lapply(rg,function(x) length(unique(x)))
+rg is the data set
+function(x) is a function with argument as x
+length of unique values is calculated for the function
+***********************
+How to identify outliers-
+you can use , (q1-1.5*iqr , q3+1.5*iqr ) or ( mean+-3*std). in general if you are using algos like randomforest , you dont need to worry about outliers 
+***********************
+FREQUENCIES FOR A PARTICULAR COLUMN
+
+library(dplyr)
+j=master %>%
+  group_by(countyname) %>%
+  summarise(count=n())
+***********************
+IMPORTANT NOTE
+
+Whenever any Categorical Variable/column takes too many values then ignore that variable because it doesn't contain enough information
+***********************
+SUBSET from a data frame
+tmp <- subset(df, col1 == "a" & col2==1)
+sum(tmp[,3]) # sum the third column
+***********************
+Identify Outliers
+# generate 10 random numbers and 2 'outlier' numbers
+testData <- c(-42,rnorm(10),42)
+
+# show the numbers
+testData
+
+# define a function to remove outliers
+FindOutliers <- function(data) {
+  lowerq = quantile(data)[2]
+  upperq = quantile(data)[4]
+  iqr = upperq - lowerq #Or use IQR(data)
+  # we identify extreme outliers
+  extreme.threshold.upper = (iqr * 3) + upperq
+  extreme.threshold.lower = lowerq - (iqr * 3)
+  result <- which(data > extreme.threshold.upper | data < extreme.threshold.lower)
+}
+
+# use the function to identify outliers
+temp <- FindOutliers(testData)
+
+# remove the outliers
+testData <- testData[-temp]
+
+# show the data
+testData
+***********************
+Function to find Mode
+Mode <- function(x, na.rm = FALSE) {
+  if(na.rm){
+    x = x[!is.na(x)]
+  }
+  
+  ux <- unique(x)
+  return(ux[which.max(tabulate(match(x, ux)))])
+}
+If NAs to be removed then pass second argument as TRUE
+***********************
+
+import pandas as pd 
+import numpy as np
+import math
+import os
+
+from matplotlib import pyplot as plt
+import seaborn as sns
+%matplotlib inline
+
+from scipy.stats import pearsonr
+
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, train_test_split, KFold, tree, linear_model
+from sklearn.linear_model import Ridge, Lasso, LinearRegression, LogisticRegression
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier, GradientBoostingRegressor, GradientBoostingClassifier
+import xgboost
+from sklearn.metrics import mean_absolute_error, roc_curve, auc, explained_variance_score, confusion_matrix 
+from sklearn.neighbors import KNeighborsRegressor, KNeighborsClassifier
+
+------------
+
+datafrm.select_dtypes(['object']) #Returns col names with data type as object
+datafrm.isnull().sum()
+###############
+A technique to slow down the learning in the gradient boosting model is to apply a weighting factor for the corrections by new trees when added to the model.
+
+#Lower Learning Rate = Higher number of estimators
+
+############
+
+Identify Null Position
+final.loc[final['MSZoning'].isnull(),'MSZoning']
+
+#find the maximum occuring value
+final['MSZoning'].value_counts()
+
+#Replace null value with above val
+final.loc[final['MSZoning'].isnull(),'MSZoning'] = 'RL'
+
+##############
+
+A. Creating nd Arrays
+B. Subsetting with indices and conditions
+C. Comparison with np and math functions, Special numpy functions
+
+import numpy as np
+
+b=np.array([[3,20,99],[-13,4.5,26],[0,-1,20],[5,78,-19]])
+
+b.shape # without brackets. It gives dimension i.e. 4,3
+
+b[2,1] # access second element from third row. Counting starts from 0.
+
+b[:,1] # gives the entire rows for second column
+b[1,:] # similar goes for column
+
+b[1] # if only 1 arg is passed then it is considered as row.
+
+b[[0,1,1],[1,2,1]] #Random elements can be accessed
+
+b[[0,1,1],[1,2,1]] = [-10,-20,-30] #Assign values
+b%2 == 0 #o/p will have True and False
+b[b>0] # Gives all elements > 0
+
+b[2] >= 0 #Array with True or False for entire row
+b[:,[False,True,True]]#last 2 cols.
+b[:,b[2]>=0]#Elements where condition is true
+b[b[2]>=0,:]
+b[:,2]>=0
+
+###
+Math functions works on scalers(single values)
+Numpy functions can work on vectors(multiple values)
+###
+
+import numpy as np
+Absolute Values within matrix using numpy's abs function
+b[1] = np.abs(b[1]) #-ve val in First row will be updated to +ve
+
+np.sum(b,axis=0) #Column wise sum
+np.sum(b,axis=1) #Row wise sum
+
+np.arange(start, end+1)
+np.linespace(start=2,stop=10,num=15) #15 numbers starting at 2 and ends with 10
+np.arange(start, end+1, step size)#Another format
+#Another function
+np.linspace(start,stop,num)
+#stop is included unlike arange.
+#num is number of elements
+
+np.random.randint(high=10,low=1,size=(2,3)) # array with 2 rows and 3 columns having values between 1 to 9
+
+np.random.random(size=(2,3)) #Matrix of 2*3 with values between 0&1
+
+x=np.arange(10) # values from 0 till 9
+np.random.choice(x,6) #selects any 6 random values from array.
+np.random.choice(x,6,replace=False)
+y=np.random.choice(['a','b'],1000,p=[0.8,0.2])
+
+np.unique(y,return_counts=True)
+
+#Documentation for function-
+help(np.random.choice)
+
+np.random.seed(2)
+np.random.choice(x,4,replace=False)
+
+x=np.random.randint(high=100,low=12,size=(4,6))
+x.sort() #Row wise sorting in case of 2D arrays
+
+#argsort() gives the indices of list within matrix
+x[:,2]
+x[:,2].argsort()
+x[x[:,2].argsort(),:]
+
+x.max() gives maximum value from x
+x.argmax() gives the index of max value
+
+***************
+Package pandas
+***************
+1. Manually creating data frames
+2. Reading data from external file
+3. Peripheral symmary of the data
+4. Subsetting on the basis of rownumber, colnumber
+5. Subsetting on the basis of condition
+6. Subsetting on the basis of column names
+
+import pandas as pd
+import numpy as np
+
+age = np.random.randint(low = 0, high = 11, size[20,])#list of 20 random integers between 0 to 10
+city = np.random.choice(['Mumbai','Delhi','Chennai',Kolkata'],20]# list of 20 random cities
+mydata = list(zip(age,city)) #List of age and city with 20 records will be created
+
+df = pd.DataFrame(data = mydata, columns=['Age','City']) #A new dataframe will be created
+
+#Another way is through dictionary
+df = pd.DataFrame({'AGE':age,'CITY':city,'DEFAULT':default})
+
+#Reading data from file
+filename = r'path of the file' #any special char is ignored and treated just as a path.
+example-
+file = r'E:\Data Science Study\Data Sets\Python\loan_data_train.csv'
+
+ld = pd.read_csv(file) #read csv file from above path
+ld.head(10) #displays first 10 records
+
+ld.columns # gives columnames
+ld.dtypes # data types of column. Object corresponds to categorical data.
+ld.shape # this gives number of rows and columns
+
+ld1 = ld.iloc[3:7,1:5] #Range of rows and columns for subsetting. Begining with 0.
+
+#Subset through Conditioning.
+ld[(ld['Home.Ownership']=='MORTGAGE') & (ld['Monthly.Income']>5000)]
+
+ld[['Home.Ownership','Monthly.Income']] #o/p will have these cols
+
+ld.index  #o/p will give the start and stop indices with step size
+#Restting index to some random values-
+ld.index = np.random.randint(high=30,low=1,size=[20,])
+
+ld.loc[(ld['Home.Ownership']=='MORTGAGE') & (ld['Monthly.Income']>5000),['Home.Ownership','Monthly.Income']]
+# (.loc) to be used if rows and cols data to be extracted
+# .loc extracts data based on id/index column (Generally first column in bold). Note-this col can be shuffeled.
+# .iloc extracts data based on position. If we pass 5 as row then this will be fifth row from top(starting from 0)
+
+#Drop records on the basis of condition
+ld.loc[~((ld['Home.Ownership']=='MORTGAGE') & (ld['Monthly.Income']>5000)),['Home.Ownership','Monthly.Income']]
+Add tilda infornt of a condition
+
+#Drop columns on the basis of column names
+ld.drop(['Home.Ownership','Monthly.Income'],axis=1)
+Note-This function doesn't drop columns from original data set. It just gives the output with those dropped columns. In order to drop the cols from original datasets store the result back in that object. ex- ld = ld.drop(.......)
+-Alternative to this is an additional parameter inplace. Example-
+ld.drop(['Debt.To.Income.Ration','State'],axis=1,inplace=True)
+It doesn't give any output and drop col from original data set.
+-Alternative 2
+del ld['Employment.Length']
+
+1. Changing variable types
+2. Adding/modifying variables with algebraic operations
+3. Adding/modifying variables based on conditions
+4. Handling missing values
+5. Creating flag variables
+6. Creating multiple columns from a variable with separating at a delimiter
+
+age = np.random.choice([15,20,30,45,12,'10',15,'34',7,'missing'],50)
+fico = np.random.choice(['100-150','150-200','200-250','250-300'],50)
+city=np.random.choice(['Mumbai','Delhi','Chennai','Kolkata'],50)
+ID = np.arange(50)
+rating = np.random.choice(['Excellent','Good','Bad','Pathetic'],50)
+balance = np.random.choice([10000,20000,30000,40000,np.nan,50000,60000],50)
+children = np.random.randint(high=5,low=0,size=(50,))
+
+mydata = pd.DataFrame({'ID':ID,'Age':age,'FICO':fico,'City':city,'Rating':rating,'Balance':balance,'Children':children})
+
+#Convert non numeric values to numbers for age
+mydata['Age'] = pd.to_numeric(mydata['Age'],errors = 'coerce')
+
+#Adding new columns
+mydata['Const_var']=100
+mydata['Balance_log']=np.log(mydata['Balance'])
+mydata['Age_children_ratio']=mydata['Age']/mydata['Children']
+
+#Identify if a column has missing value
+mydata['Age'].isnull()
+mydata['Age'].isnull().sum() # Count of missing values
+mydata.isnull().sum() # It gives columnwise sum of missing values
+
+#Replace null with mean
+mydata.loc[mydata['Age'].isnull(),'Age'] = mydata['Age'].mean()
+
+#Add value in column based on condition
+mydata['Rating_score'] = np.where(mydata['Rating'].isin(['Good','Excellent']),1,0)
+
+mydata.loc[mydata['Rating'] == 'Pathetic','Rating_score']=-1
+
+k = mydata['FICO'].str.split('-',expand=True).astype(float) #Argument expand splits data into different columns if True
+
+#Add these cols to our data frame
+mydata['F1'],mydata['F2'] = k[0],k[1]
+del mydata['FICO'] # Delete original column
+
+mydata['City_Mumbai'] = np.where(mydata['City']=='Mumbai',1,0)
+mydata['City_Chennai']=(mydata['City']=='Chennai').astype(int)
+
+#Create Dummies
+dummy = pd.get_dummies(mydata['Rating'],drop_first=True,prefix='Rating')
+
+#Attach Dummies to original data set
+mydata = pd.concat([mydata,dummy],axis=1)
+
+#Delete Original column
+del mydata['Rating']
+
+1. Sorting data by one or more column in ascending or descending manner
+2. Combining dataframes vertically or horizontally
+3. Merging them using keys, left, right, inner and outer join
+
+#Create a data frame for practice.
+df = pd.DataFrame(np.random.randint(2,8,(20,4)),columns = list('ABCD'))
+
+#Sort data frame based on single column
+df.sort_values('A',inplace=True) # inplace updates the datframe
+df.sort_values('A',inplace=True,ascending=False) #Descending order 
+
+#Sort multiple columns simultaneously. One in ascending and other in descending
+df.sort_values(['B','C'],ascending=[True,False])
+
+#Combining dataframes
+df1 = pd.DataFrame([['a',1],['b',2]],columns=['letter','number'])
+df2 = pd.DataFrame([['c',3,'cat'],['d',4,'dog']],columns=['letter','number','animal'])
+
+pd.concat([df1,df2],axis=0)
+#axis = 0 same as rbind and axis = 1 same as cbind in R
+
+pd.concat([df1,df2],axis=0,ignore_index=True) #Here indexes for both the data frames will ignored and new index for final result will be created.
+
+#Combining records with similar keys (foreign key in SQL)
+df1 = pd.DataFrame({'Custid':[1,2,3,4,5],
+'Product':['Radio','Radio','Fridge','Fridge','Phone']})
+df2 = pd.DataFrame({'Custid':[3,4,5,6,7],
+'State':['UP','UP','UP','MH','MH']})
+
+pd.merge(df1,df2,on=['Custid'],how='inner')
+# inner - A intersection B
+# outer - A union B (Not repeating common elements)
+# left - All elements from A
+# right - All elements from B
+#If key columns in both the dataframes are different then use arguments left_on and right_on
+
+##Numeric Summary of Data
+bd.describe() # Gives the numerical/statistical summary for numeric columns.
+bd.nunique() # number of unique values in each column
+
+#Check DataType and number of unique values together
+list(zip(bd.columns,bd.dtypes,bd.nunique()))
+
+bd['age'].describe() # Same can be applied columnwise also
+bd['age'].nunique()
+
+bd['job'].value_counts() #Gives the frequency count of individual value from specified column
+
+k=bd['job'].value_counts()
+bd['job'].value_counts(normalize=True)#It converts the frequencies into percentages
+bd['job'].value_counts(normalize=True,dropna=False)#This considers missing values also.
+
+k.values #Gives the frequency count
+k.index #Gives the category
+k.index[-1] #Category with least frequency because final result for value_counts() is sorted in descending order
+k.index[0] #Category with max frequency
+
+k.index[k.values>1500] #Values which has freq > 1500
+Above statement can also be written as k.index[k.>1500]
+
+#Collapsing 2 cols. Summarising 2 cols based on their values
+pd.crosstab(bd['default'],bd['housing'])
+housing/	no		yes
+default		
+no		19701		24695
+yes		380		435
+#Based on unique vaules from these cols, number of rows and cols in output increases
+
+#Identify the Categorical columns
+bd.select_dtypes(['object']).columns
+
+#Value count for categorical columns in data frame
+for col in bd.select_dtypes(['object']).columns:
+    print('summary for :'+col)
+    print(bd[col].value_counts())
+    print('--------------')
+
+#GROUP WISE SUMMARY
+bd.groupby(['default'])['age'].median()
+#Median age of defaulters and non-defaulters. Output is as below-
+default
+no	39
+yes	38
+#39 and 38 are ages. We can include more such columns next to 'age' separated by commas.
+#We can take n number of columns into consideration
+bd.groupby(['default','education','loan'])['age'].median()
+#If we want selected columns then this can be achieved as-
+bd.groupby(['default','loan'])['age','day','balance'].median()
+
+#Pivot function
+pd.pivot_table(bd,values='age',columns='job',index='loan',aggfunc='mean')
+
+##Visual Summary of Data
+import seaborn as sns
+%matplotlib inline
+
+1. Numeric Variable : Density plots, box plots
+2. Numeric = Numeric Variables : Scatter Plot, Pairwise density plots
+3. Faceting of the data
+4. Categorical Data
+5. Faceting in categorical data
+6. Heatmaps
+
+sns.distplot(bd['age'],kde=False) #kde = Kernel Density if set to flase then density curve doesn't come in output.
+
+#Number of bins can be controlled
+sns.distplot(bd['age'],kde=False,bins=15)
+
+#Frequencies are converted to % with norm_hist parameter (on Y-axis)
+sns.distplot(bd['age'],kde=False,bins=15,norm_hist=True)
+
+myplot = sns.distplot(bd['age'],kde=False,bins=15,norm_hist=True)
+myimg = myplot.get_figure()
+myimg.savefig('Output.jpg') #Image saved at path where file is present
+
+sns.kdeplot(bd['age']) # Just density plot
+
+#Box Plot
+sns.boxplot(bd['age'])
+sns.boxplot(y='age',data=bd) #Alternate
+#x for horizontal and y for vertical box plot
+
+#Box plot don't give density. For density we can have violin plot. Syntax is same
+sns.violinplot(x='age',data=bd)
+
+#Joint plot is combination of scatter plot and histogram
+sns.jointplot(x='age',y='balance',data = bd)
+
+#In order to cap the balance from 0 to 1000 in graph.
+sns.jointplot(x='age',y='balance',data=bd.loc[(bd['balance']>0) & (bd['balance']<1000),:],kind='hex')#kind='hex' is used to add more dark color for higher frequencies i.e. hex plot. It can be set to kind='kde', this turns the plot to density.
+
+#We can include limited datapoints.
+sns.jointplot(x='age',y='balance',data=bd.iloc[:100,:],kind='hex',size=10)
+
+#Faceting of data
+sns.lmplot(x='duration',y='campaign',data=bd.iloc[1:500,:], hue='housing',col='default',row='loan')
+#X-axis has attribute 'duration'
+#Y-axis has attribute 'campaign'
+#data is from data frame bd (Only 1 to 500 rows and all cols)
+#hue is colour for attribute housing
+#col has another variable from data frame
+#row = loan means there will be different graphs row wise for each value of loan i.e. one for yes and another for no
+#fit_reg is another argument which can be set to False, it is by default True. If True it plots a regression model relating the `x` and `y` variables
+#Another option argument is order. If `order` is greater than 1, system use `numpy.polyfit` to estimate a polynomial regression.
+
+#Count Plot
+sns.countplot(x='education',data=bd)
+sns.countplot(x='education',hue='housing',data=bd)
+#Another example
+sns.countplot(x='education',data=bd,hue='loan')
+#Box plot
+sns.boxplot(x='age',y='education',data=bd) #Different boxplot for each education category.
+
+#Correlation function
+bd.corr()
+
+#Heat Maps
+x = np.random.random(size=(20,20))
+sns.heatmap(x)
+#Correlation using heatmap
+sns.heatmap(bd.corr())
+
+##Regular Expression
+Package used is re
+import re
+mylist=['abc123xyz','define456','789sth','379tut']
+[re.sub('123','Match',elem) for elem in mylist]
+
+Replace every single digit with another word
+[re.sub('\\d','MATCH',elem) for elem in mylist]
+
+Replace 3 consecutive digits with single word
+[re.sub('\\d\\d\\d','MATCH',elem) for elem in mylist]
+
+Replace every single character with another word
+[re.sub('.','MATCH',elem) for elem in mylist]
+
+mylist=['896.','?Q+.','abc1']
+#Output should be ['MATCH','MATCH','abc1']
+[re.sub('...\\.','MATCH',elem) for elem in mylist]
+
+#Special Character
+mylist = ['<abc','#abc','abc<#%']
+#O/p should be ['MATCHabc','MATCHabc','abcMATCHMATCHMATCH']
+[re.sub('[<#%]','MATCH',elem) for elem in mylist]
+
+#Alternate way is. Everything which comes after ^ will be untouched rest will be updated
+[re.sub('[^abc]','MATCH',elem) for elem in mylist]
+
+#Replacement excluding ranges
+mylist=['<abc','#qer','LMn<#%']
+[re.sub('[^a-zA-Z]','MATCH',elem) for elem in mylist]
+#Numbers also
+mylist=['<abc','#qer345','LMn<#%123']
+[re.sub('[^a-zA-Z0-9]','MATCH',elem) for elem in mylist]
+
+#Replacement for words with first capital letter
+mylist = ['Ana','Bob','Cpc','aax','bby','ccz']
+[re.sub('[A-Z][a-z][a-z]','MATCH',elem) for elem in mylist]
+
+#Replace 10 digits
+mylist=['abc123xyz','define4567891234','789sth','379tut9920581396']
+[re.sub('\\d{10}','MATCH',elem) for elem in mylist]
+
+#Replace 3 to 5 digits number
+mylist = ['abc23gf123','2345','qw23456','qwe123456']
+[re.sub('\\d{3,5}','MATCH',elem)for elem in mylist]
+#This will replace first 5 digits of greater digit number.
+
+#Replace only 3 to 5 digits of a number. if digits are more then it should not be replaced
+mylist = ['abc23gf123','2345','qw23456','qwe1234568']
+[re.sub('\\d{3,5}[^\\d]','MATCH',elem)for elem in mylist]
+
+#Replace anything above 3 digits
+mylist = ['abc23gf123','2345','qw23456','qwe1234568']
+[re.sub('\\d{3,}','MATCH',elem)for elem in mylist]
+
+#Replace a specific pattern
+[re.sub('m*t','MATCH',elem) for elem in people]
+#It will replace t, mt, mmt, mmmt, .....
+#If m should appear atleast once then use m+t instead of m*t
+
+#Optional character replacement
+[re.sub('ab?c','MATCH',elem) for elem in mylist]
+#It will replace abc as well as ac with MATCH
+
+#Specific pattern
+If I want ac, abc, ab?c, a?c in the output, where ? is literally a question mark then-
+[re.sub('ab?\\??c','MATCH',elem) for elem in mylist]
+
+myfiles = ['file_record_transcript.pdf','file_07241999.pdf','file.pdf','fileabcpdf','fileabc.pdf','testfile_fake.pdf.tmp','file_record_transcript.pdff']
+#Output should begin with word 'file' then atleast one character(anything) and ends with .pdf
+patter = '^file.+\\.pdf$' #if * is used instead of + then it may consider 0 characters between file and .pdf
+[re.sub(pattern,'MATCH',elem] for elem in myfiles]
+
+ab?(QA)?c : ac, abc, aQAc, abQAc
+
+#If I want to extract phone numbers from mail then
+re.findall
+
+#12-Jan-2013
+[1-3][0-9].[A-Za-z]{3,}.2\\d{3}
